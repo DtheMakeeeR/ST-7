@@ -9,27 +9,27 @@ import org.json.simple.parser.JSONParser;
 public class Task2 {
 
   public static void execute(WebDriver driver) {
-    System.out.println("\n=== Задание №2: Мой IP-адрес ===");
+    printIpAddress(driver);
+  }
+
+  private static void printIpAddress(WebDriver browser) {
+    System.out.println("\n=== Задание №2: Определение IP-адреса ===");
+
     try {
-      // 1. Переходим по URL сервиса, который возвращает IP в формате JSON
-      driver.get("https://api.ipify.org/?format=json");
+      browser.get("https://api.ipify.org/?format=json");
 
-      // 2. Сервис возвращает JSON внутри тега <pre>, находим этот элемент
-      WebElement preElement = driver.findElement(By.tagName("pre"));
-      String jsonText = preElement.getText();
+      WebElement jsonContainer = browser.findElement(By.tagName("pre"));
+      String responseText = jsonContainer.getText();
 
-      // 3. Парсим JSON-строку в объект
       JSONParser parser = new JSONParser();
-      JSONObject jsonObject = (JSONObject) parser.parse(jsonText);
+      JSONObject data = (JSONObject) parser.parse(responseText);
 
-      // 4. Извлекаем значение по ключу "ip"
-      String ip = (String) jsonObject.get("ip");
+      String myIp = data.get("ip").toString();
 
-      // 5. Выводим результат в консоль
-      System.out.println("Ваш публичный IPv4 адрес: " + ip);
+      System.out.println("Результат: " + myIp);
 
-    } catch (Exception e) {
-      System.err.println("Ошибка при получении IP: " + e.getMessage());
+    } catch (Exception error) {
+      System.err.println("Не удалось получить IP: " + error.getMessage());
     }
   }
 }
